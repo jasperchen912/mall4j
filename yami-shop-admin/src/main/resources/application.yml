@@ -2,6 +2,10 @@ spring:
   # 环境 dev|test|prod
   profiles:
     active: dev
+  config:
+    import:
+      - optional:file:../.env[.properties]
+      - optional:file:.env[.properties]
   #文件上传设置
   servlet:
     multipart:

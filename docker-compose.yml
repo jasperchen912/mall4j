@@ -5,7 +5,7 @@ services:
       context: ./
       dockerfile: ./db/Dockerfile
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-root}
     restart: always
     container_name: mall4j-mysql
     image: mall4j-mysql
@@ -32,6 +32,11 @@ services:
       - REDIS_HOST=mall4j-redis
       - REDIS_PORT=6379
       - REDIS_DATABASE=1
+      - MYSQL_HOST=mall4j-mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-yami_shops}
+      - MYSQL_USERNAME=${MYSQL_USERNAME:-root}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-root}
     image: mall4j-admin
     ports:
       - 8085:8085
@@ -52,6 +57,11 @@ services:
       - REDIS_HOST=mall4j-redis
       - REDIS_PORT=6379
       - REDIS_DATABASE=1
+      - MYSQL_HOST=mall4j-mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-yami_shops}
+      - MYSQL_USERNAME=${MYSQL_USERNAME:-root}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-root}
     image: mall4j-api
     ports:
       - 8086:8086

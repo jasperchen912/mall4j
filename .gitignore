@@ -39,6 +39,10 @@ target/
 /logs/
 *.log
 
+### local env ###
+/.env
+/.env.local
+
 ### temp ignore ###
 *.cache
 *.diff

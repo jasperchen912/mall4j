@@ -55,7 +55,9 @@
 ### 2.启动
 
 - 推荐使用idea，安装lombok插件后，使用idea导入maven项目
-- 将yami_shop.sql导入到mysql中，修改`application-dev.yml`更改 datasource.url、user、password
+- 将yami_shop.sql导入到mysql中，可复制根目录`.env.example`为`.env`，通过`MYSQL_HOST`、`MYSQL_PORT`、`MYSQL_DATABASE`、`MYSQL_USERNAME`、`MYSQL_PASSWORD`统一配置数据库连接；从仓库根目录或后端模块目录启动时都会尝试读取该文件
+- `.env`使用properties格式，值不要加引号；该文件包含本地密码，不要提交到代码仓库
+- 使用`docker compose up --build`时，根目录`.env`里的`MYSQL_PASSWORD`会同时用于初始化MySQL root密码和admin/api服务连接；如果`mall4j-mysql`数据目录已经存在，需要先在MySQL中执行改密语句，单独修改`.env`不会改变已有数据库密码
 - 通过修改`shop.properties` 修改七牛云、阿里大鱼等信息
 - 修改`api.properties` 修改当前接口所在域名，用于支付回调
 - 启动redis，端口6379

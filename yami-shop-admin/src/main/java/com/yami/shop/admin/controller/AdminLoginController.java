@@ -10,9 +10,6 @@
 package com.yami.shop.admin.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.anji.captcha.model.common.ResponseModel;
-import com.anji.captcha.model.vo.CaptchaVO;
-import com.anji.captcha.service.CaptchaService;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.yami.shop.common.exception.YamiShopBindException;
 import com.yami.shop.common.response.ServerResponseEntity;
@@ -63,23 +60,12 @@ public class AdminLoginController {
     private PasswordCheckManager passwordCheckManager;
 
     @Autowired
-    private CaptchaService captchaService;
-
-    @Autowired
     private PasswordManager passwordManager;
 
     @PostMapping("/adminLogin")
-    @Operation(summary = "账号密码 + 验证码登录(用于后台登录)" , description = "通过账号/手机号/用户名密码登录")
+    @Operation(summary = "账号密码登录(用于后台登录)" , description = "通过账号/手机号/用户名密码登录")
     public ServerResponseEntity<?> login(
             @Valid @RequestBody CaptchaAuthenticationDTO captchaAuthenticationDTO) {
-        // 登陆后台登录需要再校验一遍验证码
-        CaptchaVO captchaVO = new CaptchaVO();
-        captchaVO.setCaptchaVerification(captchaAuthenticationDTO.getCaptchaVerification());
-        ResponseModel response = captchaService.verification(captchaVO);
-        if (!response.isSuccess()) {
-            return ServerResponseEntity.showFailMsg("验证码有误或已过期");
-        }
-
         SysUser sysUser = sysUserService.getByUserName(captchaAuthenticationDTO.getUserName());
         if (sysUser == null) {
             throw new YamiShopBindException("账号或密码不正确");

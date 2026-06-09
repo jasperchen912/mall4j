@@ -47,26 +47,16 @@
         Copyright © 2019 广州市蓝海创新科技有限公司
       </div>
     </div>
-    <Verify
-      ref="verifyRef"
-      :captcha-type="'blockPuzzle'"
-      :img-size="{width:'400px',height:'200px'}"
-      @success="login"
-    />
   </div>
 </template>
 
 <script setup>
 import { encrypt } from '@/utils/crypto'
-import { getUUID } from '@/utils'
-import Verify from '@/components/verifition/Verify.vue'
 import cookie from 'vue-cookies'
 
 const dataForm = ref({
   userName: '',
-  password: '',
-  uuid: '',
-  captcha: ''
+  password: ''
 })
 const dataRule = {
   userName: [
@@ -74,9 +64,6 @@ const dataRule = {
   ],
   password: [
     { required: true, message: '密码不能为空', trigger: 'blur' }
-  ],
-  captcha: [
-    { required: true, message: '验证码不能为空', trigger: 'blur' }
   ]
 }
 
@@ -84,17 +71,14 @@ onBeforeUnmount(() => {
   document.removeEventListener('keyup', handerKeyup)
 })
 onMounted(() => {
-  getCaptcha()
   document.addEventListener('keyup', handerKeyup)
 })
 const handerKeyup = (e) => {
-  const keycode = document.all ? event.keyCode : e.which
-  if (keycode === 13) {
-    this.dataFormSubmit()
+  if (e.key === 'Enter') {
+    dataFormSubmit()
   }
 }
 
-const verifyRef = ref(null)
 const dataFormRef = ref(null)
 let isSubmit = false
 /**
@@ -103,13 +87,13 @@ let isSubmit = false
 const dataFormSubmit = () => {
   dataFormRef.value?.validate((valid) => {
     if (valid) {
-      verifyRef.value?.show()
+      login()
     }
   })
 }
 
 const router = useRouter()
-const login = (verifyResult) => {
+const login = () => {
   if (isSubmit) {
     return
   }
@@ -119,8 +103,7 @@ const login = (verifyResult) => {
     method: 'post',
     data: http.adornData({
       userName: dataForm.value.userName,
-      passWord: encrypt(dataForm.value.password),
-      captchaVerification: verifyResult.captchaVerification
+      passWord: encrypt(dataForm.value.password)
     })
   }).then(({ data }) => {
     cookie.set('Authorization', data.accessToken)
@@ -128,13 +111,6 @@ const login = (verifyResult) => {
   }).catch(() => {
     isSubmit = false
   })
-}
-
-/**
- * 获取验证码
- */
-const getCaptcha = () => {
-  dataForm.value.uuid = getUUID()
 }
 
 </script>
@@ -192,8 +168,5 @@ const getCaptcha = () => {
 }
 .info {
   width: 410px;
-}
-:deep(.login-captcha) {
-  height: 40px;
 }
 </style>
